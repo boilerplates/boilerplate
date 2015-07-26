@@ -1,0 +1,37 @@
+{
+  "name": "boilerplate",
+  "description": "Easily create, share and use boilerplates for node.js and web projects.",
+  "version": "0.2.0",
+  "homepage": "https://github.com/jonschlinkert/boilerplate",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/boilerplate",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/boilerplate/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "component-emitter": "^1.2.0",
+    "export-files": "^2.0.1",
+    "extend-shallow": "^2.0.1",
+    "glob": "^5.0.14",
+    "inflection": "^1.7.1",
+    "lazy-cache": "^0.1.0",
+    "look-up": "^0.7.1",
+    "resolve-up": "^0.1.1"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "keywords": []
+}
