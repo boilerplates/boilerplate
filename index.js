@@ -8,16 +8,11 @@
 'use strict';
 
 var util = require('util');
-var extend = require('extend-shallow');
+var Base = require('base-methods');
+var Files = require('expand-files');
+var Target = require('expand-target');
 var inflect = require('inflection');
 var utils = require('./lib/utils');
-
-/**
- * Classes
- */
-
-var Template = require('template');
-var Scaffold = require('scaffold');
 
 /**
  * Create an instance of Boilerplate with the
@@ -31,11 +26,14 @@ var Scaffold = require('scaffold');
  */
 
 function Boilerplate(options) {
-  Template.call(this, options);
-  this.defaultConfig();
+  if (!(this instanceof Boilerplate)) {
+    return new Boilerplate(options);
+  }
+  Base.call(this);
+  this.config = {};
 }
-Template.extend(Boilerplate);
 
+Base.extend(Boilerplate);
 
 /**
  * Boilerplate's prototype methods
@@ -44,36 +42,21 @@ Template.extend(Boilerplate);
 utils.delegate(Boilerplate.prototype, {
   constructor: Boilerplate,
 
-  defaultConfig: function (opts) {
-    this.create('files');
-  },
-
   /**
-   * Register scaffold `name` with the given `options`.
+   * Register a boilerplate with the given `name`.
    *
    * ```js
-   * boilerplate.scaffold('templates');
-   * boilerplate.scaffold('dotfiles');
-   * boilerplate.scaffold('images');
+   * boilerplate.register('webapp', ...);
    * ```
    *
    * @param  {String} `name`
-   * @param  {Object} `options`
+   * @param  {Object} `config`
    * @return {Object}
    * @api public
    */
 
-  scaffold: function (name, options, fn) {
-    if (arguments.length === 1 && this[name].fn) {
-      return this[name].fn(this[name]);
-    }
-    if (typeof options === 'function') {
-      fn = options;
-      options = {};
-    }
-    options = extend({}, this.options, options);
-    this[name] = new Scaffold(options);
-    if (fn) this[name].fn = fn;
+  register: function(name, config) {
+    this.config[name] = new Target(name, config);
     return this;
   },
 
@@ -90,23 +73,10 @@ utils.delegate(Boilerplate.prototype, {
    * @api public
    */
 
-  register: function(name, config) {
-    this.boilerplates[name] = config;
-    return this;
-  },
-
-  /**
-   * Define a non-enumerable property on the instance.
-   *
-   * @param  {String} key The property name.
-   * @param  {any} value Property value.
-   * @return {Object} Returns the instance of `Boilerplate`, for chaining.
-   */
-
-  define: function (key, value) {
-    utils.defineProp(this, key, value);
-    return this;
-  }
+  // register: function(name, config) {
+  //   this.boilerplates[name] = config;
+  //   return this;
+  // }
 });
 
 /**

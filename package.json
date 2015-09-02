@@ -17,7 +17,10 @@
     "test": "mocha"
   },
   "dependencies": {
+    "base-methods": "^0.2.1",
     "component-emitter": "^1.2.0",
+    "expand-files": "^0.1.2",
+    "expand-target": "^0.1.2",
     "export-files": "^2.0.1",
     "extend-shallow": "^2.0.1",
     "glob": "^5.0.14",
