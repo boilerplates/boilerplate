@@ -9,13 +9,16 @@ var boilerplate = new Boilerplate();
 
 
 boilerplate.scaffold('webapp', {cwd: 'fixtures/boilerplate-webapp'});
+
+// create collections
 boilerplate.webapp.create('dotfiles');
-boilerplate.webapp.dotfiles('dotfiles/*');
-
 boilerplate.webapp.create('root');
-boilerplate.webapp.root('root/*');
-
 boilerplate.webapp.create('copy');
+
+// load files, templates, or objects onto collections
+boilerplate.webapp.dotfiles('dotfiles/*');
+boilerplate.webapp.dotfile('gitattributes', {content: '* text eol=lf'});
+boilerplate.webapp.root('root/*');
 boilerplate.webapp.copy('copy/*');
 
 // var opts = {cwd: 'fixtures/boilerplate-webapp'};

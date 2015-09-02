@@ -23,6 +23,9 @@ var Scaffold = require('scaffold');
  * Create an instance of Boilerplate with the
  * given `options`
  *
+ * ```js
+ * var boilerplate = new Boilerplate();
+ * ```
  * @param {Object} `options`
  * @api public
  */
@@ -31,15 +34,11 @@ function Boilerplate(options) {
   Template.call(this, options);
   this.defaultConfig();
 }
-
-/**
- * Extend Template's methods onto Boilerplate
- */
-
 Template.extend(Boilerplate);
 
+
 /**
- * Boilerplate prototype methods
+ * Boilerplate's prototype methods
  */
 
 utils.delegate(Boilerplate.prototype, {
@@ -49,10 +48,20 @@ utils.delegate(Boilerplate.prototype, {
     this.create('files');
   },
 
-  collection: function () {
-    this.create.apply(this, arguments);
-    return this;
-  },
+  /**
+   * Register scaffold `name` with the given `options`.
+   *
+   * ```js
+   * boilerplate.scaffold('templates');
+   * boilerplate.scaffold('dotfiles');
+   * boilerplate.scaffold('images');
+   * ```
+   *
+   * @param  {String} `name`
+   * @param  {Object} `options`
+   * @return {Object}
+   * @api public
+   */
 
   scaffold: function (name, options, fn) {
     if (arguments.length === 1 && this[name].fn) {
@@ -68,8 +77,21 @@ utils.delegate(Boilerplate.prototype, {
     return this;
   },
 
-  register: function(name, boilerplate) {
-    this.boilerplates[name] = boilerplate;
+  /**
+   * Register a boilerplate with the given `name`.
+   *
+   * ```js
+   * boilerplate.register('webapp', ...);
+   * ```
+   *
+   * @param  {String} `name`
+   * @param  {Object} `config`
+   * @return {Object}
+   * @api public
+   */
+
+  register: function(name, config) {
+    this.boilerplates[name] = config;
     return this;
   },
 
@@ -79,7 +101,6 @@ utils.delegate(Boilerplate.prototype, {
    * @param  {String} key The property name.
    * @param  {any} value Property value.
    * @return {Object} Returns the instance of `Boilerplate`, for chaining.
-   * @api public
    */
 
   define: function (key, value) {

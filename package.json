@@ -5,9 +5,6 @@
   "homepage": "https://github.com/jonschlinkert/boilerplate",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/boilerplate",
-  "bugs": {
-    "url": "https://github.com/jonschlinkert/boilerplate/issues"
-  },
   "license": "MIT",
   "files": [
     "index.js"
