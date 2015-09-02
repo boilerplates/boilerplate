@@ -7,12 +7,11 @@
 
 'use strict';
 
-var util = require('util');
 var Base = require('base-methods');
-var Files = require('expand-files');
+var delegate = require('delegate-properties');
+var toPath = require('to-object-path');
 var Target = require('expand-target');
-var inflect = require('inflection');
-var utils = require('./lib/utils');
+var merge = require('mixin-deep');
 
 /**
  * Create an instance of Boilerplate with the
@@ -30,73 +29,75 @@ function Boilerplate(options) {
     return new Boilerplate(options);
   }
   Base.call(this);
-  this.config = {};
+  this.options = options || {};
+  this.targets = {};
 }
-
 Base.extend(Boilerplate);
 
 /**
  * Boilerplate's prototype methods
  */
 
-utils.delegate(Boilerplate.prototype, {
+delegate(Boilerplate.prototype, {
   constructor: Boilerplate,
 
   /**
-   * Register a boilerplate with the given `name`.
+   * Register a boilerplate "target" with the given `name`. A
+   * target is a semantically-grouped configuration of
+   * files and directories.
    *
    * ```js
    * boilerplate.register('webapp', ...);
    * ```
    *
-   * @param  {String} `name`
+   * @param  {String} `name` The name of the config target.
    * @param  {Object} `config`
    * @return {Object}
    * @api public
    */
 
   register: function(name, config) {
-    this.config[name] = new Target(name, config);
+    this.targets[name] = new Target(name, this.defaults(config));
     return this;
   },
 
   /**
-   * Register a boilerplate with the given `name`.
+   * Set or get an option to be used as a default value
+   * when registering boilerplate targets. Pass a key-value
+   * pair or an object to set a value, or the key of
+   * the value to get.
    *
    * ```js
-   * boilerplate.register('webapp', ...);
-   * ```
-   *
-   * @param  {String} `name`
-   * @param  {Object} `config`
-   * @return {Object}
-   * @api public
+   * boilerplate.option('cwd', 'templates/');
+   * ``
+   * @param {String|Object|Array} `key`
+   * @param {any} `value`
+   * @return {Object} Returns the instance of Boilerplate for chaining
    */
 
-  // register: function(name, config) {
-  //   this.boilerplates[name] = config;
-  //   return this;
-  // }
+  option: function(key, value) {
+    if (typeof key === 'string') {
+      key = toPath('options', key);
+      if (arguments.length === 1) {
+        return this.get(key, value);
+      }
+    } else {
+      this.visit('option', key);
+      return this;
+    }
+    this.set(key, value);
+    return this;
+  },
+
+  /**
+   * Set default values on targets.
+   */
+
+  defaults: function(config) {
+    config.options = merge({expand: true}, this.options, config.options);
+    return config;
+  }
 });
-
-/**
- * Static method for allowing other classes to inherit from
- * the `Boilerplate` class, and receive all of Boilerplate's prototype
- * methods.
- *
- * ```js
- * function MyBoilerplateApp(options) {...}
- * Boilerplate.extend(MyBoilerplateApp);
- * ```
- *
- * @param  {Object} `Ctor` Constructor function to extend with `Boilerplate`
- * @return {undefined}
- * @api public
- */
-
-Boilerplate.extend = function(Ctor) {
-  util.inherits(Ctor, Boilerplate);
-};
 
 /**
  * Expose `Boilerplate`
