@@ -8,16 +8,19 @@
 'use strict';
 
 var Base = require('base-methods');
-var delegate = require('delegate-properties');
-var Scaffold = require('scaffold');
 var merge = require('mixin-deep');
+var Scaffold = require('scaffold');
 
 /**
  * Create an instance of Boilerplate with the
  * given `options`
  *
  * ```js
- * var boilerplate = new Boilerplate();
+ * var boilerplate = new Boilerplate({
+ *   templates: {
+ *     files: [{src: 'templates/*.hbs', dest: 'src/'}]
+ *   }
+ * });
  * ```
  * @param {Object} `options`
  * @api public
@@ -52,45 +55,41 @@ function Boilerplate(config) {
 Base.extend(Boilerplate);
 
 /**
- * Boilerplate's prototype methods
+ * Initialize Boilerplate defaults
  */
 
-delegate(Boilerplate.prototype, {
-  constructor: Boilerplate,
+Boilerplate.prototype.init = function(config, options) {
+  config.options = merge({}, options, config.options);
+  return config;
+};
 
-  init: function(config, options) {
-    config.options = merge({}, options, config.options);
-    return config;
-  },
+/**
+ * Register a boilerplate "target" with the given `name`. A
+ * target is a semantically-grouped configuration of
+ * files and directories.
+ *
+ * ```js
+ * boilerplate.register('webapp', ...);
+ * ```
+ *
+ * @param  {String} `name` The name of the config target.
+ * @param  {Object} `config`
+ * @return {Object}
+ * @api public
+ */
 
-  /**
-   * Register a boilerplate "target" with the given `name`. A
-   * target is a semantically-grouped configuration of
-   * files and directories.
-   *
-   * ```js
-   * boilerplate.register('webapp', ...);
-   * ```
-   *
-   * @param  {String} `name` The name of the config target.
-   * @param  {Object} `config`
-   * @return {Object}
-   * @api public
-   */
-
-  scaffold: function(name, config) {
-    if (typeof name !== 'string') {
-      throw new TypeError('expected name to be a string.');
-    }
-    if (!config || typeof config !== 'object') {
-      throw new TypeError('expected config to be an object.');
-    }
-    this.targets[name] = !(config instanceof Scaffold)
-      ? new Scaffold(config)
-      : config;
-    return this;
+Boilerplate.prototype.scaffold = function(name, config) {
+  if (typeof name !== 'string') {
+    throw new TypeError('expected name to be a string.');
   }
-});
+  if (!config || typeof config !== 'object') {
+    throw new TypeError('expected config to be an object.');
+  }
+  this.targets[name] = !(config instanceof Scaffold)
+    ? new Scaffold(config)
+    : config;
+  return this;
+};
 
 /**
  * Return `true` if an object has any of the given keys.
