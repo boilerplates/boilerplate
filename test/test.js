@@ -47,8 +47,8 @@ describe('boilerplate', function () {
     it('should expose `set`:', function () {
       assert(typeof boilerplate.set === 'function');
     });
-    it('should expose `scaffold`:', function () {
-      assert(typeof boilerplate.scaffold === 'function');
+    it('should expose `target`:', function () {
+      assert(typeof boilerplate.target === 'function');
     });
   });
 
@@ -62,7 +62,7 @@ describe('boilerplate', function () {
       assert(boilerplate.targets.templates.files[0].src.length > 0);
     });
 
-    it('should create a boilerplate target from a scaffold:', function () {
+    it('should create a boilerplate target from an instance of Scaffold:', function () {
       var boilerplate = new Boilerplate({
         templates: new Scaffold({
           files: [{src: 'test/templates/*.txt', dest: 'src/'}]
@@ -98,27 +98,27 @@ describe('boilerplate', function () {
 
     it('should throw an error when config is not an object:', function () {
       (function () {
-        boilerplate.scaffold('foo', null);
+        boilerplate.target('foo', null);
       }).should.throw('expected config to be an object.');
       (function () {
-        boilerplate.scaffold('foo', 'foo');
+        boilerplate.target('foo', 'foo');
       }).should.throw('expected config to be an object.');
       (function () {
-        boilerplate.scaffold('foo', function() {});
+        boilerplate.target('foo', function() {});
       }).should.throw('expected config to be an object.');
     });
   });
 
-  describe('scaffold:', function () {
+  describe('targets:', function () {
     it('should throw an error when name is missing:', function () {
       (function () {
-        boilerplate.scaffold();
+        boilerplate.target();
       }).should.throw('expected name to be a string.');
     });
 
     it('should throw an error when config is not an object:', function () {
       (function () {
-        boilerplate.scaffold('foo');
+        boilerplate.target('foo');
       }).should.throw('expected config to be an object.');
     });
   });

@@ -45,7 +45,7 @@ function Boilerplate(config) {
   for (var key in config) {
     var val = config[key];
     if (isTarget(val)) {
-      this.scaffold(key, this.init(val, this.options));
+      this.target(key, this.init(val, this.options));
     } else {
       this.config[key] = val;
     }
@@ -64,21 +64,21 @@ Boilerplate.prototype.init = function(config, options) {
 };
 
 /**
- * Register a boilerplate "target" with the given `name`. A
- * target is a semantically-grouped configuration of
- * files and directories.
+ * Register a boilerplate `target` with the given `name` and
+ * configuration options. A target is just a way to organize
+ * the files or content of a boilerplate into smaller groups.
  *
  * ```js
- * boilerplate.register('webapp', ...);
+ * boilerplate.target('webapp', ...);
  * ```
  *
- * @param  {String} `name` The name of the config target.
- * @param  {Object} `config`
+ * @param  {String} `name` The name of the target.
+ * @param  {Object} `config` The configuration to use.
  * @return {Object}
  * @api public
  */
 
-Boilerplate.prototype.scaffold = function(name, config) {
+Boilerplate.prototype.target = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected name to be a string.');
   }
