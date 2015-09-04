@@ -9,8 +9,7 @@
 
 var Base = require('base-methods');
 var delegate = require('delegate-properties');
-var toPath = require('to-object-path');
-var Target = require('expand-target');
+var Scaffold = require('scaffold');
 var merge = require('mixin-deep');
 
 /**
@@ -24,14 +23,32 @@ var merge = require('mixin-deep');
  * @api public
  */
 
-function Boilerplate(options) {
-  if (!(this instanceof Boilerplate)) {
-    return new Boilerplate(options);
+function Boilerplate(config) {
+  if (!config || typeof config !== 'object') {
+    throw new TypeError('expected config to be an object.');
   }
+
+  if (!(this instanceof Boilerplate)) {
+    return new Boilerplate(config);
+  }
+
   Base.call(this);
-  this.options = options || {};
+  // sift out options and non-target config values
+  this.options = config.options || {};
+  delete config.options;
+  this.config = {};
   this.targets = {};
+
+  for (var key in config) {
+    var val = config[key];
+    if (isTarget(val)) {
+      this.scaffold(key, this.init(val, this.options));
+    } else {
+      this.config[key] = val;
+    }
+  }
 }
+
 Base.extend(Boilerplate);
 
 /**
@@ -40,6 +57,11 @@ Base.extend(Boilerplate);
 
 delegate(Boilerplate.prototype, {
   constructor: Boilerplate,
+
+  init: function(config, options) {
+    config.options = merge({}, options, config.options);
+    return config;
+  },
 
   /**
    * Register a boilerplate "target" with the given `name`. A
@@ -56,48 +78,41 @@ delegate(Boilerplate.prototype, {
    * @api public
    */
 
-  register: function(name, config) {
-    this.targets[name] = new Target(name, this.defaults(config));
-    return this;
-  },
-
-  /**
-   * Set or get an option to be used as a default value
-   * when registering boilerplate targets. Pass a key-value
-   * pair or an object to set a value, or the key of
-   * the value to get.
-   *
-   * ```js
-   * boilerplate.option('cwd', 'templates/');
-   * ``
-   * @param {String|Object|Array} `key`
-   * @param {any} `value`
-   * @return {Object} Returns the instance of Boilerplate for chaining
-   */
-
-  option: function(key, value) {
-    if (typeof key === 'string') {
-      key = toPath('options', key);
-      if (arguments.length === 1) {
-        return this.get(key, value);
-      }
-    } else {
-      this.visit('option', key);
-      return this;
+  scaffold: function(name, config) {
+    if (typeof name !== 'string') {
+      throw new TypeError('expected name to be a string.');
     }
-    this.set(key, value);
+    if (!config || typeof config !== 'object') {
+      throw new TypeError('expected config to be an object.');
+    }
+    this.targets[name] = !(config instanceof Scaffold)
+      ? new Scaffold(config)
+      : config;
     return this;
-  },
-
-  /**
-   * Set default values on targets.
-   */
-
-  defaults: function(config) {
-    config.options = merge({expand: true}, this.options, config.options);
-    return config;
   }
 });
+
+/**
+ * Return `true` if an object has any of the given keys.
+ *
+ * @param {Object} `obj`
+ * @param {Array} `keys`
+ * @return {Boolean}
+ */
+
+function isTarget(val) {
+  if (Array.isArray(val)) {
+    return false;
+  }
+  if (typeof val !== 'object') {
+    return false;
+  }
+  var keys = ['src', 'dest', 'files'];
+  for (var key in val) {
+    if (keys.indexOf(key) > -1) return true;
+  }
+  return false;
+}
 
 /**
  * Expose `Boilerplate`
