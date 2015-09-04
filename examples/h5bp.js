@@ -1,21 +1,23 @@
 var path = require('path');
 var Boilerplate = require('../');
-var boilerplate = new Boilerplate({
+var inspect = require('stringify-object');
+
+
+function stringify(config) {
+  return inspect(config, {
+    singleQuotes: true,
+    indent: '  '
+  });
+}
+
+var h5bp = new Boilerplate({
   options: {
-    cwd: 'sandbox/boilerplate-webapp/root',
-    expand: false,
+    cwd: 'vendor/h5bp/dist'
   },
-  a: 'b',
-  c: {d: 'e'},
-  scripts: {
-    files: [{src: 'scripts/*.js', dest: 'src/'}]
-  },
-  styles: {
-    files: [{src: 'styles/*.css', dest: 'src/'}]
-  },
-  templates: {
-    files: [{src: 'templates/*.hbs', dest: 'src/'}]
-  }
+  root: {src: ['{.*,*.*}'], dest: 'src/'},
+  css: {src: ['css/*.css'], dest: 'src/'},
+  doc: {src: ['doc/*.md'], dest: 'src/'},
+  js: {src: ['js/**/*.js'], dest: 'src/'}
 });
 
-console.log(boilerplate)
+console.log(stringify(h5bp))
