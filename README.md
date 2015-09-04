@@ -10,14 +10,14 @@ Welcome to boilerplate! Here you'll find both the tools and conventions for crea
 
 **What does this project provide?**
 
-* [opinionated conventions][conventions] for defining and organizing project boilerplates
+* [opinionated conventions](./docs/terminology.md) for defining and organizing project boilerplates
 * [API](#api) for actually creating boilerplates
-* [documentation and guide][docs] to help you get started with authoring your own boilerplates
+* [documentation](./getting-started.md) and [guide](./guide.md) to help you get started with [authoring](./docs/authoring.md) your own boilerplates
 * [website](http://boilerplates.io) for discovering boilerplates created by the community
 
 **What does this NOT provide?**
 
-Workflows and tools for actually generating new projects from a boilerplate. This is a job much better suited to build systems like [assemble][], [gulp][], [grunt][], and [yeoman][].
+Workflows and tools for actually generating new projects from a boilerplate. This is a job much better suited to build systems like [assemble](http://assemble.io), [gulp](http://gulpjs.com), [grunt](http://gruntjs.com/), and [yeoman](http://yeoman.io).
 
 If you publish a
 
@@ -37,7 +37,7 @@ var boilerplate = require('boilerplate');
 
 ## API
 
-### [Boilerplate](index.js#L27)
+### [Boilerplate](index.js#L29)
 
 Create an instance of Boilerplate with the given `options`
 
@@ -48,8 +48,16 @@ Create an instance of Boilerplate with the given `options`
 **Example**
 
 ```js
-var boilerplate = new Boilerplate();
+var boilerplate = new Boilerplate({
+  templates: {
+    files: [{src: 'templates/*.hbs', dest: 'src/'}]
+  }
+});
 ```
+
+### [.scaffold](index.js#L81)
+
+Register a boilerplate "target" with the given `name`. A target is a semantically-grouped configuration of files and directories.
 
 **Params**
 
@@ -67,8 +75,19 @@ boilerplate.register('webapp', ...);
 
 * [assemble](https://www.npmjs.com/package/assemble): Static site generator for Grunt.js, Yeoman and Node.js. Used by Zurb Foundation, Zurb Ink, H5BP/Effeckt,… [more](https://www.npmjs.com/package/assemble) | [homepage](http://assemble.io)
 * [boilerplate](https://www.npmjs.com/package/boilerplate): Easily create, share and use boilerplates for node.js and web projects. | [homepage](https://github.com/jonschlinkert/boilerplate)
-* [scaffold](https://www.npmjs.com/package/scaffold): Generate a project or files from scaffolds. | [homepage](https://github.com/jonschlinkert/scaffold)
+* [scaffold](https://www.npmjs.com/package/scaffold): Conventions and API for creating scaffolds that can by used by any build system or… [more](https://www.npmjs.com/package/scaffold) | [homepage](https://github.com/jonschlinkert/scaffold)
 * [template](https://www.npmjs.com/package/template): Render templates using any engine. Supports, layouts, pages, partials and custom template types. Use template… [more](https://www.npmjs.com/package/template) | [homepage](https://github.com/jonschlinkert/template)
+
+## Test coverage
+
+As of September 04, 2015:
+
+```
+Statements   : 100% (40/40)
+Branches     : 100% (24/24)
+Functions    : 100% (4/4)
+Lines        : 100% (39/39)
+```
 
 ## Running tests
 
