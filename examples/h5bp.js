@@ -1,22 +1,21 @@
 var path = require('path');
 var Boilerplate = require('../');
 var boilerplate = new Boilerplate({
-  cwd: 'sandbox/boilerplate-webapp/root',
-  expand: false,
+  options: {
+    cwd: 'sandbox/boilerplate-webapp/root',
+    expand: false,
+  },
+  a: 'b',
+  c: {d: 'e'},
+  scripts: {
+    files: [{src: 'scripts/*.js', dest: 'src/'}]
+  },
+  styles: {
+    files: [{src: 'styles/*.css', dest: 'src/'}]
+  },
+  templates: {
+    files: [{src: 'templates/*.hbs', dest: 'src/'}]
+  }
 });
 
-boilerplate.register('root', {
-  src: ['*']
-});
-
-boilerplate.register('binary', {
-  src: ['*']
-});
-
-boilerplate.register('dotfiles', {
-  src: ['*']
-});
-
-console.log(boilerplate.targets.root.files)
-console.log(boilerplate.targets.binary.files)
-console.log(boilerplate.targets.dotfiles.files)
+console.log(boilerplate)
