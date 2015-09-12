@@ -36,6 +36,8 @@ function Boilerplate(config) {
   }
 
   Base.call(this);
+  this.isBoilerplate = true;
+
   // sift out options and non-target config values
   this.options = config.options || {};
   delete config.options;
