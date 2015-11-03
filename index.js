@@ -8,8 +8,9 @@
 'use strict';
 
 var Base = require('base-methods');
+var Files = require('expand-files');
+var Target = require('expand-target');
 var merge = require('mixin-deep');
-var Scaffold = require('scaffold');
 
 /**
  * Create an instance of Boilerplate with the
@@ -26,44 +27,23 @@ var Scaffold = require('scaffold');
  * @api public
  */
 
-function Boilerplate(config) {
-  if (!config || typeof config !== 'object') {
-    throw new TypeError('expected config to be an object.');
-  }
-
+function Boilerplate(options) {
   if (!(this instanceof Boilerplate)) {
-    return new Boilerplate(config);
+    return new Boilerplate(options);
   }
-
   Base.call(this);
+  this.use(require('base-plugins'));
+  this.use(require('base-options'));
+  this.options = options || {};
   this.isBoilerplate = true;
-
-  // sift out options and non-target config values
-  this.options = config.options || {};
-  delete config.options;
-  this.config = {};
   this.targets = {};
-
-  for (var key in config) {
-    var val = config[key];
-    if (isTarget(val)) {
-      this.target(key, this.init(val, this.options));
-    } else {
-      this.config[key] = val;
-    }
-  }
 }
 
-Base.extend(Boilerplate);
-
 /**
- * Initialize Boilerplate defaults
+ * Inherit `Base`
  */
 
-Boilerplate.prototype.init = function(config, options) {
-  config.options = merge({}, options, config.options);
-  return config;
-};
+Base.extend(Boilerplate);
 
 /**
  * Register a boilerplate `target` with the given `name` and
@@ -80,40 +60,31 @@ Boilerplate.prototype.init = function(config, options) {
  * @api public
  */
 
-Boilerplate.prototype.target = function(name, config) {
+Boilerplate.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected name to be a string.');
   }
-  if (!config || typeof config !== 'object') {
+  if (config == null || typeof config !== 'object') {
     throw new TypeError('expected config to be an object.');
   }
-  this.targets[name] = !(config instanceof Scaffold)
-    ? new Scaffold(config)
-    : config;
+
+  Object.defineProperty(this.targets, name, {
+    enumerable: true,
+    get: function () {
+      if (config.isTarget || config.isScaffold) {
+        return config;
+      }
+      var target = new Target(this.options);
+      target.expand(config);
+      return target.cache;
+    }
+  });
   return this;
 };
 
-/**
- * Return `true` if an object has any of the given keys.
- *
- * @param {Object} `obj`
- * @param {Array} `keys`
- * @return {Boolean}
- */
-
-function isTarget(val) {
-  if (Array.isArray(val)) {
-    return false;
-  }
-  if (typeof val !== 'object') {
-    return false;
-  }
-  var keys = ['src', 'dest', 'files'];
-  for (var key in val) {
-    if (keys.indexOf(key) > -1) return true;
-  }
-  return false;
-}
+Boilerplate.prototype.getTarget = function(name) {
+  return this.targets[name];
+};
 
 /**
  * Expose `Boilerplate`

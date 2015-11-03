@@ -20,21 +20,26 @@
     "test": "mocha"
   },
   "dependencies": {
-    "base-methods": "^0.2.5",
+    "base-methods": "^0.4.0",
+    "base-options": "^0.5.0",
+    "base-plugins": "^0.4.1",
+    "define-property": "^0.2.5",
+    "expand-config": "^0.2.1",
+    "expand-files": "^0.4.1",
+    "expand-target": "^0.2.3",
+    "extend-shallow": "^2.0.1",
+    "get-value": "^2.0.0",
     "mixin-deep": "^1.1.3",
-    "scaffold": "^0.1.2"
+    "scaffold": "^0.1.2",
+    "set-value": "^0.2.0"
   },
   "devDependencies": {
-    "expand-config": "^0.2.1",
-    "expand-target": "^0.2.3",
-    "get-value": "^1.2.1",
     "gulp": "^3.9.0",
     "gulp-istanbul": "^0.10.0",
     "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3",
     "jshint-stylish": "^2.0.1",
     "mocha": "^2.3.0",
-    "set-value": "^0.2.0",
     "should": "^7.1.0",
     "stringify-object": "jonschlinkert/stringify-object"
   },
