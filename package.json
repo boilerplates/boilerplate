@@ -20,28 +20,21 @@
     "test": "mocha"
   },
   "dependencies": {
-    "base-methods": "^0.4.0",
-    "base-options": "^0.5.0",
-    "base-plugins": "^0.4.1",
     "define-property": "^0.2.5",
-    "expand-config": "^0.2.1",
-    "expand-files": "^0.4.1",
-    "expand-target": "^0.2.3",
+    "expand-target": "^0.5.3",
+    "expand-utils": "^0.1.4",
     "extend-shallow": "^2.0.1",
-    "get-value": "^2.0.0",
-    "mixin-deep": "^1.1.3",
-    "scaffold": "^0.1.2",
-    "set-value": "^0.2.0"
+    "scaffold": "^0.2.5",
+    "use": "^1.1.2"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-istanbul": "^0.10.0",
-    "gulp-jshint": "^1.11.2",
-    "gulp-mocha": "^2.1.3",
-    "jshint-stylish": "^2.0.1",
-    "mocha": "^2.3.0",
-    "should": "^7.1.0",
-    "stringify-object": "jonschlinkert/stringify-object"
+    "gulp-eslint": "^1.1.1",
+    "gulp-format-md": "^0.1.4",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-mocha": "^2.2.0",
+    "mocha": "*",
+    "should": "*"
   },
   "keywords": [
     "app",
@@ -73,11 +66,31 @@
   "verb": {
     "related": {
       "list": [
-        "boilerplate",
         "assemble",
-        "template",
-        "scaffold"
+        "boilerplate",
+        "generate",
+        "scaffold",
+        "templates",
+        "update",
+        "verb"
       ]
-    }
+    },
+    "reflinks": [
+      "assemble",
+      "boilerplate",
+      "broccoli",
+      "expand-files",
+      "expand-target",
+      "grunt",
+      "gulp",
+      "metalsmith",
+      "scaffold",
+      "templates",
+      "verb",
+      "yeoman"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ]
   }
 }
