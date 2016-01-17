@@ -7,13 +7,13 @@ var assert = require('assert');
 var Boilerplate = require('..');
 var boilerplate;
 
-describe('boilerplates', function () {
+describe('boilerplates', function() {
   beforeEach(function() {
     boilerplate = new Boilerplate();
   });
 
-  describe('scaffolds', function () {
-    it('should expose an "options" property', function () {
+  describe('scaffolds', function() {
+    it('should expose an "options" property', function() {
       boilerplate.expand({});
       assert(boilerplate.options);
     });
@@ -22,7 +22,7 @@ describe('boilerplates', function () {
       assert.equal(typeof boilerplate.expand, 'function');
     });
 
-    it('should recognize scaffolds', function () {
+    it('should recognize scaffolds', function() {
       boilerplate.expand({foo: {a: {src: '*'}}});
       assert(boilerplate.scaffolds);
     });
