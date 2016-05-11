@@ -2,7 +2,6 @@
 
 > This guide walks you through the steps of creating your first boilerplate.
 
-
 ## 1. Download [html5-boilerplate]
 
 ```sh

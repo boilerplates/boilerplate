@@ -23,18 +23,17 @@
     "define-property": "^0.2.5",
     "expand-target": "^0.5.3",
     "expand-utils": "^0.1.4",
-    "extend-shallow": "^2.0.1",
-    "scaffold": "^0.2.5",
-    "use": "^1.1.2"
+    "scaffold": "^0.2.6",
+    "use": "^2.0.0"
   },
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-eslint": "^1.1.1",
-    "gulp-format-md": "^0.1.4",
+    "gulp-format-md": "^0.1.9",
     "gulp-istanbul": "^0.10.3",
     "gulp-mocha": "^2.2.0",
-    "mocha": "*",
-    "should": "*"
+    "mocha": "^2.4.5",
+    "should": "^8.3.1"
   },
   "keywords": [
     "app",
@@ -63,7 +62,20 @@
     "toolkit",
     "yeoman"
   ],
+  "lint-deps": {
+    "ignore": [
+      "recipes"
+    ]
+  },
   "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
     "related": {
       "list": [
         "assemble",
@@ -76,27 +88,17 @@
       ]
     },
     "reflinks": [
-      "assemble",
-      "boilerplate",
-      "broccoli",
-      "expand-files",
-      "expand-target",
-      "grunt",
       "gulp",
+      "grunt",
+      "assemble",
       "metalsmith",
-      "scaffold",
-      "template",
-      "templates",
-      "verb",
-      "yeoman"
+      "yeoman",
+      "guide",
+      "broccoli",
+      "verb"
     ],
-    "plugins": [
-      "gulp-format-md"
-    ]
-  },
-  "lint-deps": {
-    "ignore": [
-      "recipes"
-    ]
+    "lint": {
+      "reflinks": true
+    }
   }
 }

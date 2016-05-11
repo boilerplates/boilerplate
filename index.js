@@ -1,7 +1,6 @@
 'use strict';
 
 var utils = require('expand-utils');
-var extend = require('extend-shallow');
 var define = require('define-property');
 var Target = require('expand-target');
 var Scaffold = require('scaffold');
