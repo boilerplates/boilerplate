@@ -41,9 +41,9 @@ describe('boilerplates', function() {
         foo: {a: {src: '*.md'}},
         bar: {a: {src: '*.js'}},
       });
-      assert(Array.isArray(boilerplate.scaffolds.foo.a.files));
-      assert(Array.isArray(boilerplate.scaffolds.foo.a.files[0].src));
-      assert(boilerplate.scaffolds.foo.a.files[0].src.length);
+      assert(Array.isArray(boilerplate.scaffolds.foo.targets.a.files));
+      assert(Array.isArray(boilerplate.scaffolds.foo.targets.a.files[0].src));
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].src.length);
     });
 
     it('should use scaffold options on targets', function() {
@@ -52,8 +52,8 @@ describe('boilerplates', function() {
         foo: {a: {src: 'a.*'}},
         bar: {a: {src: 'one.*'}},
       });
-      assert(boilerplate.scaffolds.foo.a.files[0].src[0] === 'a.txt');
-      assert(boilerplate.scaffolds.bar.a.files[0].src[0] === 'one.md');
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].src[0] === 'a.txt');
+      assert(boilerplate.scaffolds.bar.targets.a.files[0].src[0] === 'one.md');
     });
 
     it('should retain arbitrary properties on scaffolds', function() {
@@ -61,9 +61,9 @@ describe('boilerplates', function() {
         foo: {a: {src: '*.md', data: {title: 'My Blog'}}},
         bar: {a: {src: '*.js'}},
       });
-      assert(boilerplate.scaffolds.foo.a.files[0].data);
-      assert(boilerplate.scaffolds.foo.a.files[0].data.title);
-      assert(boilerplate.scaffolds.foo.a.files[0].data.title === 'My Blog');
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data);
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data.title);
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data.title === 'My Blog');
     });
 
     it('should use plugins on scaffolds', function() {
@@ -82,15 +82,15 @@ describe('boilerplates', function() {
         bar: {a: {src: '*.js'}},
       });
 
-      assert(boilerplate.scaffolds.foo.a.files[0].data);
-      assert(boilerplate.scaffolds.foo.a.files[0].data.title);
-      assert(boilerplate.scaffolds.foo.a.files[0].data.title === 'My Blog');
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data);
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data.title);
+      assert(boilerplate.scaffolds.foo.targets.a.files[0].data.title === 'My Blog');
 
-      assert(boilerplate.scaffolds.bar.a.options.data);
-      assert(boilerplate.scaffolds.bar.a.options.data.title === 'My Site');
-      assert(boilerplate.scaffolds.bar.a.files[0].data);
-      assert(boilerplate.scaffolds.bar.a.files[0].data.title);
-      assert(boilerplate.scaffolds.bar.a.files[0].data.title === 'My Site');
+      assert(boilerplate.scaffolds.bar.targets.a.options.data);
+      assert(boilerplate.scaffolds.bar.targets.a.options.data.title === 'My Site');
+      assert(boilerplate.scaffolds.bar.targets.a.files[0].data);
+      assert(boilerplate.scaffolds.bar.targets.a.files[0].data.title);
+      assert(boilerplate.scaffolds.bar.targets.a.files[0].data.title === 'My Site');
     });
   });
 

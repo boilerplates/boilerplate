@@ -3,8 +3,9 @@
 var utils = require('expand-utils');
 var define = require('define-property');
 var Target = require('expand-target');
+var plugins = require('base-plugins');
 var Scaffold = require('scaffold');
-var use = require('use');
+var Base = require('base');
 
 /**
  * Expand a declarative configuration with scaffolds and targets.
@@ -29,8 +30,9 @@ function Boilerplate(options) {
     return new Boilerplate(options);
   }
 
-  utils.is(this, 'boilerplate');
-  use(this);
+  Base.call(this, {}, options);
+  this.is('Boilerplate');
+  this.use(plugins());
 
   define(this, 'count', 0);
   this.options = options || {};
@@ -43,6 +45,12 @@ function Boilerplate(options) {
     return this;
   }
 }
+
+/**
+ * Inherit Base
+ */
+
+Base.extend(Boilerplate);
 
 /**
  * Static method, returns `true` if the given value is an
@@ -165,9 +173,10 @@ Boilerplate.prototype.addScaffold = function(name, boilerplate) {
 
   var scaffold = new Scaffold(this.options);
   define(scaffold, 'name', name);
+  this.run(scaffold);
 
-  utils.run(this, 'boilerplate', scaffold);
   scaffold.addTargets(boilerplate);
+  scaffold.on('target', this.emit.bind(this, 'target'));
 
   this.scaffolds[name] = scaffold;
   return scaffold;
