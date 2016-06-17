@@ -173,11 +173,13 @@ Boilerplate.prototype.addScaffold = function(name, boilerplate) {
 
   var scaffold = new Scaffold(this.options);
   define(scaffold, 'name', name);
+
+  scaffold.on('target', this.emit.bind(this, 'target'));
+  scaffold.on('files', this.emit.bind(this, 'files'));
+  scaffold.on('file', this.emit.bind(this, 'file'));
   this.run(scaffold);
 
   scaffold.addTargets(boilerplate);
-  scaffold.on('target', this.emit.bind(this, 'target'));
-
   this.scaffolds[name] = scaffold;
   return scaffold;
 };
@@ -206,9 +208,11 @@ Boilerplate.prototype.addTarget = function(name, boilerplate) {
   var target = new Target(this.options);
   define(target, 'name', name);
 
+  target.on('files', this.emit.bind(this, 'files'));
+  target.on('file', this.emit.bind(this, 'file'));
   utils.run(this, 'target', target);
-  target.addFiles(boilerplate);
 
+  target.addFiles(boilerplate);
   this.targets[name] = target;
   return target;
 };
