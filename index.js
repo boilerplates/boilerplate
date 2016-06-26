@@ -1,11 +1,8 @@
 'use strict';
 
-var utils = require('expand-utils');
-var define = require('define-property');
-var Target = require('expand-target');
-var plugins = require('base-plugins');
-var Scaffold = require('scaffold');
 var Base = require('base');
+var util = require('expand-utils');
+var utils = require('./utils');
 
 /**
  * Expand a declarative configuration with scaffolds and targets.
@@ -31,15 +28,19 @@ function Boilerplate(options) {
   }
 
   Base.call(this, {}, options);
-  this.is('Boilerplate');
-  this.use(plugins());
+  this.is('boilerplate');
+  this.use(utils.plugins());
 
-  define(this, 'count', 0);
-  this.options = options || {};
+  emit('scaffold', this, Boilerplate);
+  emit('target', this, Boilerplate);
+  emit('files', this, Boilerplate);
+  emit('file', this, Boilerplate);
+
+  utils.define(this, 'count', 0);
   this.scaffolds = {};
   this.targets = {};
 
-  if (utils.isConfig(options)) {
+  if (util.isConfig(options)) {
     this.options = {};
     this.expand(options);
     return this;
@@ -53,12 +54,11 @@ function Boilerplate(options) {
 Base.extend(Boilerplate);
 
 /**
- * Static method, returns `true` if the given value is an
- * instance of `Boilerplate` or appears to be a valid `boilerplate`
- * configuration object.
+ * Returns `true` if the given value is an instance of `Boilerplate` or appears to be a
+ * valid `boilerplate` configuration object.
  *
  * ```js
- * Boilerplate.isBoilerplate({});
+ * boilerplate.isBoilerplate({});
  * //=> false
  *
  * var h5bp = new Boilerplate({
@@ -66,28 +66,16 @@ Base.extend(Boilerplate);
  *   root: {src: ['{.*,*.*}'], dest: 'src/'},
  *   // ...
  * });
- * Boilerplate.isBoilerplate(h5bp);
+ * boilerplate.isBoilerplate(h5bp);
  * //=> true
  * ```
- * @static
  * @param {Object} `config` The value to check
  * @return {Boolean}
  * @api public
  */
 
-Boilerplate.isBoilerplate = function(config) {
-  if (!utils.isObject(config)) {
-    return false;
-  }
-  if (config.isBoilerplate) {
-    return true;
-  }
-  for (var key in config) {
-    if (Scaffold.isScaffold(config[key])) {
-      return true;
-    }
-  }
-  return false;
+Boilerplate.prototype.isBoilerplate = function(config) {
+  return Boilerplate.isBoilerplate(config);
 };
 
 /**
@@ -128,7 +116,7 @@ Boilerplate.isBoilerplate = function(config) {
 
 Boilerplate.prototype.expand = function(boilerplate) {
   // support anonymous targets
-  if (utils.isTarget(boilerplate)) {
+  if (util.isTarget(boilerplate)) {
     this.addTarget('target' + (this.count++), boilerplate);
     return this;
   }
@@ -137,10 +125,10 @@ Boilerplate.prototype.expand = function(boilerplate) {
     if (boilerplate.hasOwnProperty(key)) {
       var val = boilerplate[key];
 
-      if (Scaffold.isScaffold(val)) {
+      if (this.Scaffold.isScaffold(val)) {
         this.addScaffold(key, val);
 
-      } else if (utils.isTarget(val)) {
+      } else if (util.isTarget(val)) {
         this.addTarget(key, val);
 
       } else {
@@ -160,26 +148,32 @@ Boilerplate.prototype.expand = function(boilerplate) {
  *   docs: {src: '*.md', dest: 'content/'}
  * });
  * ```
+ * @emits `scaffold`
  * @param {String} `name` the scaffold's name
- * @param {Object} `boilerplate` Scaffold object where each key is a target or `options`.
+ * @param {Object} `config` Scaffold configuration object, where each key is a target or `options`.
  * @return {Object}
  * @api public
  */
 
-Boilerplate.prototype.addScaffold = function(name, boilerplate) {
+Boilerplate.prototype.addScaffold = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected a string');
   }
 
+  var Scaffold = this.get('Scaffold');
   var scaffold = new Scaffold(this.options);
-  define(scaffold, 'name', name);
+  utils.define(scaffold, 'name', name);
 
-  scaffold.on('target', this.emit.bind(this, 'target'));
-  scaffold.on('files', this.emit.bind(this, 'files'));
-  scaffold.on('file', this.emit.bind(this, 'file'));
+  scaffold.options = utils.merge({}, this.options, scaffold.options, config.options);
+  scaffold.define('parent', this);
+
+  this.emit('scaffold', scaffold);
+  emit('target', scaffold, this);
+  emit('files', scaffold, this);
+  emit('file', scaffold, this);
   this.run(scaffold);
 
-  scaffold.addTargets(boilerplate);
+  scaffold.addTargets(config);
   this.scaffolds[name] = scaffold;
   return scaffold;
 };
@@ -191,31 +185,111 @@ Boilerplate.prototype.addScaffold = function(name, boilerplate) {
  * ```js
  * boilerplate.addTarget({src: '*.hbs', dest: 'templates/'});
  * ```
+ * @emits `target`
  * @param {String} `name` The target's name
- * @param {Object} `target` Target object with a `files` property, or `src` and optionally a `dest` property.
+ * @param {Object} `target` Target configuration object with either a `files` or`src` property, and optionally a `dest` property.
  * @return {Object}
  * @api public
  */
 
-Boilerplate.prototype.addTarget = function(name, boilerplate) {
+Boilerplate.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected a string');
   }
-  if (!utils.isObject(boilerplate)) {
+  if (!util.isObject(config)) {
     throw new TypeError('expected an object');
   }
 
+  var Target = this.get('Target');
   var target = new Target(this.options);
-  define(target, 'name', name);
+  utils.define(target, 'name', name);
 
-  target.on('files', this.emit.bind(this, 'files'));
-  target.on('file', this.emit.bind(this, 'file'));
-  utils.run(this, 'target', target);
+  target.options = utils.merge({}, this.options, target.options, config.options);
+  target.define('parent', this);
 
-  target.addFiles(boilerplate);
+  this.emit('target', target);
+  emit('files', target, this);
+  emit('file', target, this);
+  util.run(this, 'target', target);
+
+  target.addFiles(config);
   this.targets[name] = target;
   return target;
 };
+
+/**
+ * Get or set the `Target` constructor to use for creating new targets.
+ */
+
+Object.defineProperty(Boilerplate.prototype, 'Target', {
+  configurable: true,
+  set: function(Target) {
+    utils.define(this, '_Target', Target);
+  },
+  get: function() {
+    return this._Target || this.options.Target || utils.Target;
+  }
+});
+
+/**
+ * Get or set the `Scaffold` constructor to use for creating new scaffolds.
+ */
+
+Object.defineProperty(Boilerplate.prototype, 'Scaffold', {
+  configurable: true,
+  set: function(Scaffold) {
+    utils.define(this, '_Scaffold', Scaffold);
+  },
+  get: function() {
+    return this._Scaffold || this.options.Scaffold || utils.Scaffold;
+  }
+});
+
+/**
+ * Static method, returns `true` if the given value is an
+ * instance of `Boilerplate` or appears to be a valid `boilerplate`
+ * configuration object.
+ *
+ * ```js
+ * Boilerplate.isBoilerplate({});
+ * //=> false
+ *
+ * var h5bp = new Boilerplate({
+ *   options: {cwd: 'vendor/h5bp/dist'},
+ *   root: {src: ['{.*,*.*}'], dest: 'src/'},
+ *   // ...
+ * });
+ * Boilerplate.isBoilerplate(h5bp);
+ * //=> true
+ * ```
+ * @static
+ * @param {Object} `config` The value to check
+ * @return {Boolean}
+ * @api public
+ */
+
+Boilerplate.isBoilerplate = function(config) {
+  if (!util.isObject(config)) {
+    return false;
+  }
+  if (config.isBoilerplate) {
+    return true;
+  }
+  for (var key in config) {
+    if (utils.Scaffold.isScaffold(config[key])) {
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Forward events
+ */
+
+function emit(name, a, b) {
+  a.on(name, b.emit.bind(b, name));
+}
 
 /**
  * Expose `Boilerplate`
