@@ -21,13 +21,13 @@ describe('boilerplate', function() {
 
     it('should set options', function() {
       boilerplate = new Boilerplate({cwd: 'test/templates'});
-      assert(boilerplate.options.cwd === 'test/templates');
+      assert.equal(boilerplate.options.cwd, 'test/templates');
     });
   });
 
   describe('static methods', function() {
     it('should expose `isBoilerplate`', function() {
-      assert(typeof Boilerplate.isBoilerplate === 'function');
+      assert.equal(typeof Boilerplate.isBoilerplate, 'function');
     });
 
     it('should return true if a value is an instance of boilerplate', function() {
