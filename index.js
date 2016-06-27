@@ -136,6 +136,7 @@ Boilerplate.prototype.expand = function(boilerplate) {
       }
     }
   }
+  return this;
 };
 
 /**
