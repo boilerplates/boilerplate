@@ -11,6 +11,7 @@ require = utils;
 require('base-plugins', 'plugins');
 require('define-property', 'define');
 require('expand-target', 'Target');
+require('isobject', 'isObject');
 require('is-scaffold');
 require('mixin-deep', 'merge');
 require('scaffold', 'Scaffold');

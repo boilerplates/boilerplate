@@ -58,7 +58,7 @@ describe('boilerplate', function() {
       boilerplate.addTarget('templates', {
         files: [{src: 'test/templates/*.txt', dest: 'src/'}]
       });
-      assert(boilerplate.targets.templates.files[0].src.length > 0);
+      assert(boilerplate.scaffolds.default.targets.templates.files[0].src.length > 0);
     });
 
     it('should create a target from an instance of Scaffold', function() {
@@ -67,7 +67,7 @@ describe('boilerplate', function() {
       });
       var boilerplate = new Boilerplate();
       boilerplate.addTarget('templates', scaffold);
-      assert(boilerplate.targets.templates.files[0].src.length > 0);
+      assert(boilerplate.scaffolds.default.targets.templates.files[0].src.length > 0);
     });
 
     it('should throw an error when name is missing', function() {

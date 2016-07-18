@@ -38,7 +38,6 @@ function Boilerplate(options) {
 
   utils.define(this, 'count', 0);
   this.scaffolds = {};
-  this.targets = {};
 
   if (util.isConfig(options)) {
     this.options = {};
@@ -114,16 +113,26 @@ Boilerplate.prototype.isBoilerplate = function(config) {
  * @api public
  */
 
-Boilerplate.prototype.expand = function(boilerplate) {
-  // support anonymous targets
-  if (util.isTarget(boilerplate)) {
-    this.addTarget('target' + (this.count++), boilerplate);
+Boilerplate.prototype.expand = function(config) {
+  // support targets
+  if (util.isTarget(config)) {
+    var name = config.name || 'target' + (this.count++);
+    this.addTarget(name, config);
     return this;
   }
 
-  for (var key in boilerplate) {
-    if (boilerplate.hasOwnProperty(key)) {
-      var val = boilerplate[key];
+  // support scaffolds
+  if (utils.Scaffold.isScaffold(config) && config.name) {
+    this.addScaffold(config.name, config);
+    return this;
+  }
+
+  for (var key in config) {
+    if (key === 'name' || key === 'key') {
+      continue;
+    }
+    if (config.hasOwnProperty(key)) {
+      var val = config[key];
 
       if (this.Scaffold.isScaffold(val)) {
         this.addScaffold(key, val);
@@ -197,8 +206,12 @@ Boilerplate.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected a string');
   }
-  if (!util.isObject(config)) {
+  if (!utils.isObject(config)) {
     throw new TypeError('expected an object');
+  }
+
+  if (!this.scaffolds.hasOwnProperty('default')) {
+    this.scaffolds.default = {targets: {}};
   }
 
   var Target = this.get('Target');
@@ -214,7 +227,7 @@ Boilerplate.prototype.addTarget = function(name, config) {
   util.run(this, 'target', target);
 
   target.addFiles(config);
-  this.targets[name] = target;
+  this.scaffolds.default.targets[name] = target;
   return target;
 };
 
@@ -270,7 +283,7 @@ Object.defineProperty(Boilerplate.prototype, 'Scaffold', {
  */
 
 Boilerplate.isBoilerplate = function(config) {
-  if (!util.isObject(config)) {
+  if (!utils.isObject(config)) {
     return false;
   }
   if (config.isBoilerplate) {
@@ -288,8 +301,8 @@ Boilerplate.isBoilerplate = function(config) {
  * Forward events
  */
 
-function emit(name, a, b) {
-  a.on(name, b.emit.bind(b, name));
+function emit(name, provider, receiver) {
+  provider.on(name, receiver.emit.bind(receiver, name));
 }
 
 /**

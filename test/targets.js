@@ -26,8 +26,8 @@ describe('targets', function() {
       foo: {src: '*'},
       bar: {src: '*'}
     });
-    assert(boilerplate.targets.foo);
-    assert(boilerplate.targets.bar);
+    assert(boilerplate.scaffolds.default.targets.foo);
+    assert(boilerplate.scaffolds.default.targets.bar);
   });
 
   it('should expand src patterns in targets', function() {
@@ -36,9 +36,9 @@ describe('targets', function() {
       bar: {src: '*.js'}
     });
 
-    assert(Array.isArray(boilerplate.targets.foo.files));
-    assert(Array.isArray(boilerplate.targets.foo.files[0].src));
-    assert(boilerplate.targets.foo.files[0].src.length);
+    assert(Array.isArray(boilerplate.scaffolds.default.targets.foo.files));
+    assert(Array.isArray(boilerplate.scaffolds.default.targets.foo.files[0].src));
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].src.length);
   });
 
   it('should emit `target`', function() {
@@ -61,8 +61,8 @@ describe('targets', function() {
       foo: {src: 'a.*'},
       bar: {src: 'one.*'}
     });
-    assert.strictEqual(boilerplate.targets.foo.files[0].src[0], 'a.txt');
-    assert.strictEqual(boilerplate.targets.bar.files[0].src[0], 'one.md');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].src[0], 'a.txt');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.bar.files[0].src[0], 'one.md');
   });
 
   it('should give precendence to target options over scaffold options', function() {
@@ -80,10 +80,10 @@ describe('targets', function() {
         src: 'one.*'
       }
     });
-    assert.strictEqual(boilerplate.targets.foo.options.abc, '123');
-    assert.strictEqual(boilerplate.targets.bar.options.abc, '456');
-    assert.strictEqual(boilerplate.targets.foo.files[0].src[0], 'a.txt');
-    assert.strictEqual(boilerplate.targets.bar.files[0].src[0], 'one.md');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.options.abc, '123');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.bar.options.abc, '456');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].src[0], 'a.txt');
+    assert.strictEqual(boilerplate.scaffolds.default.targets.bar.files[0].src[0], 'one.md');
   });
 
   it('should retain arbitrary properties on targets', function() {
@@ -91,9 +91,9 @@ describe('targets', function() {
       foo: {src: '*.md', data: {title: 'My Blog'}},
       bar: {src: '*.js'}
     });
-    assert(boilerplate.targets.foo.files[0].data);
-    assert(boilerplate.targets.foo.files[0].data.title);
-    assert.strictEqual(boilerplate.targets.foo.files[0].data.title, 'My Blog');
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data);
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data.title);
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].data.title, 'My Blog');
   });
 
   it('should use plugins on targets', function() {
@@ -112,15 +112,15 @@ describe('targets', function() {
       bar: {src: '*.js'}
     });
 
-    assert(boilerplate.targets.foo.files[0].data);
-    assert(boilerplate.targets.foo.files[0].data.title);
-    assert.strictEqual(boilerplate.targets.foo.files[0].data.title, 'My Blog');
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data);
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data.title);
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].data.title, 'My Blog');
 
-    assert(boilerplate.targets.bar.options.data);
-    assert.strictEqual(boilerplate.targets.bar.options.data.title, 'My Site');
-    assert(boilerplate.targets.bar.files[0].data);
-    assert(boilerplate.targets.bar.files[0].data.title);
-    assert.strictEqual(boilerplate.targets.bar.files[0].data.title, 'My Site');
+    assert(boilerplate.scaffolds.default.targets.bar.options.data);
+    assert.strictEqual(boilerplate.scaffolds.default.targets.bar.options.data.title, 'My Site');
+    assert(boilerplate.scaffolds.default.targets.bar.files[0].data);
+    assert(boilerplate.scaffolds.default.targets.bar.files[0].data.title);
+    assert.strictEqual(boilerplate.scaffolds.default.targets.bar.files[0].data.title, 'My Site');
   });
 });
 
