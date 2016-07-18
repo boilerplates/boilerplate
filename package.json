@@ -1,7 +1,7 @@
 {
   "name": "boilerplate",
   "description": "Tools and conventions for authoring and using declarative configurations for project \"boilerplates\" that can be consumed by any build system or project scaffolding tool.",
-  "version": "0.5.3",
+  "version": "0.6.0",
   "homepage": "https://github.com/jonschlinkert/boilerplate",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/boilerplate",
