@@ -209,26 +209,10 @@ Boilerplate.prototype.addTarget = function(name, config) {
   if (!utils.isObject(config)) {
     throw new TypeError('expected an object');
   }
-
   if (!this.scaffolds.hasOwnProperty('default')) {
-    this.scaffolds.default = {targets: {}};
+    this.addScaffold('default', {});
   }
-
-  var Target = this.get('Target');
-  var target = new Target(this.options);
-  utils.define(target, 'name', name);
-
-  target.options = utils.merge({}, this.options, target.options, config.options);
-  target.define('parent', this);
-
-  this.emit('target', target);
-  emit('files', target, this);
-  emit('file', target, this);
-  util.run(this, 'target', target);
-
-  target.addFiles(config);
-  this.scaffolds.default.targets[name] = target;
-  return target;
+  return this.scaffolds.default.addTarget(name, config);
 };
 
 /**

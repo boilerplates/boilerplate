@@ -96,6 +96,23 @@ describe('targets', function() {
     assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].data.title, 'My Blog');
   });
 
+  it('should emit "target"', function(cb) {
+    var count = 0;
+    boilerplate.on('target', function() {
+      count++;
+    });
+
+    boilerplate.expand({
+      foo: {src: '*.md', data: {title: 'My Blog'}},
+      bar: {src: '*.js'}
+    });
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data);
+    assert(boilerplate.scaffolds.default.targets.foo.files[0].data.title);
+    assert.strictEqual(boilerplate.scaffolds.default.targets.foo.files[0].data.title, 'My Blog');
+    assert.equal(count, 2);
+    cb();
+  });
+
   it('should use plugins on targets', function() {
     boilerplate.use(function(boilerplate) {
       return function fn(node) {
